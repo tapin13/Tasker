@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script type="text/javascript" src="popup.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="today_date">Date</div>
+            <table>
+                <tr>
+                    <td>Date</td>
+                    <td>Time</td>
+                    <td>Task</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" id="new_date" value="" class="input_date" />
+                    </td>
+                    <td>
+                        <input type="text" id="new_time" value="" class="input_date" />
+                    </td>
+                    <td>
+                        <input type="text" id="new_task" value="" class="input_task" />
+                    </td>
+                    <td>
+                        <button id="add_task">+</button>
+                    </td>
+                </tr>
+            </table>
+            <ul></ul>
+            <div>
+                <input type="checkbox" id="show_notifications" checked="" />
+                <input type="text" id="when_to_notify" class="input_date" value="" />
+                <label for="show_notifications">Show notifications</label>
+            </div>
+        </div>
+    </body>
+</html>

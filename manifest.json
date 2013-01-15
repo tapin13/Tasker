@@ -1,0 +1,19 @@
+{
+	"name" : "tasker",
+	"version": "1.0", 
+	"manifest_version" : 2,
+	"browser_action" : {
+		"default_title": "Open tasker",
+                "default_icon": "tasker.png",
+		"default_popup": "popup.html"
+	},
+        "permissions" : [
+                "https://ajax.googleapis.com/*",
+                "storage",
+                "cookies",
+                "notifications"
+        ],
+        "content_security_policy" : "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
+        "background" : { "scripts" : ["background.js"] },
+        "web_accessible_resources" : ["tasker.png"]
+}
