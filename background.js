@@ -4,7 +4,11 @@ var tasks = new Array();
 setInterval(function() {
     var items = JSON.parse('{ "tasks" : ' + storage.getItem("tasks") + ' }');
     if(items.tasks && getCookie("show_notifications") == "true") {
-        tasks = getTodayTasks(items.tasks);
+        tasks = items.tasks;
+        for(i in tasks) {
+            tasks[i].date = new Date(tasks[i].date);
+        }        
+        tasks = getTodayTasks(tasks);
         if(window.webkitNotifications) {
             var texts = getNextTask(tasks);
             for(var i in texts) {
@@ -29,13 +33,11 @@ function getCookie(c_name){
 function getTodayTasks(tasks) {
     var today_tasks = new Array();
     var today = new Date();
-    var today_date = today.getDate() + "." + (parseInt(today.getMonth()) + 1) + "." + today.getFullYear();
     for(var i in tasks) {
-        if(tasks[i].date == today_date) {
+        if(tasks[i].date.getDate() ==  today.getDate() && tasks[i].date.getMonth() ==  today.getMonth() && tasks[i].date.getFullYear() ==  today.getFullYear()) {
             today_tasks[today_tasks.length] = tasks[i];
         }
     }
-    
     if(today_tasks.length > 0) {
         today_tasks = sortTasks(today_tasks);
     }
@@ -48,13 +50,9 @@ function getNextTask(tasks) {
     now = now.getTime();
     var next = new Array();
     for(var i in tasks) {
-        var date = tasks[i].date.split(".");
-        var time = tasks[i].time.split(":");
-        var task_date = new Date(parseInt(date[2]), parseInt(date[1] - 1), parseInt(date[0]), parseInt(time[0]), parseInt(time[1]), 0, 0);
-        task_date = task_date.getTime();
-        var delta = Math.round((task_date - now) / 60000);
+        var delta = Math.round((tasks[i].date - now) / 60000);
         if(delta == getCookie("when_to_notify")) {
-            next[next.length] = tasks[i].time + " - " + tasks[i].task;
+            next[next.length] = tasks[i].date.getHours() + ":" + tasks[i].date.getMinutes() + " - " + tasks[i].task;
         }
     }
     return next;
@@ -71,8 +69,8 @@ function sortTasks(tasks) {
         while(swapped) {
             swapped = false;
             for(var i = 0; i < tasks.length-1; i++) {
-                var this_time = tasks[i].time.replace(":", "");
-                var next_time = tasks[i+1].time.replace(":", "");
+                var this_time = tasks[i].date.getTime();
+                var next_time = tasks[i+1].date.getTime();
                 if(this_time > next_time) {
                     var temp = tasks[i];
                     tasks[i] = tasks[i+1];

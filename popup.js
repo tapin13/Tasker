@@ -12,8 +12,8 @@ $(function() {
     
     $("#add_task").click(function() {
         var new_task = new Object();
-        new_task.date = $("#add_task_day").val() + "." + $("#add_task_month").val()+ "." + $("#add_task_year").val();
-        new_task.time = $("#add_task_hour").val() + ":" + $("#add_task_minute").val();
+        var new_task_date = new Date($("#add_task_year").val(), $("#add_task_month").val(), $("#add_task_day").val(), $("#add_task_hour").val(), $("#add_task_minute").val(), 0, 0);
+        new_task.date = new_task_date.getTime();
         new_task.task = $("#new_task").val();
         if(new_task.task == '') {
             return false;
@@ -41,13 +41,11 @@ $(function() {
 function getTodayTasks(tasks) {
     var today_tasks = new Array();
     var today = new Date();
-    var today_date = today.getDate() + "." + (parseInt(today.getMonth()) + 1) + "." + today.getFullYear();
     for(var i in tasks) {
-        if(tasks[i].date == today_date) {
+        if(tasks[i].date.getDate() ==  today.getDate() && tasks[i].date.getMonth() ==  today.getMonth() && tasks[i].date.getFullYear() ==  today.getFullYear()) {
             today_tasks[today_tasks.length] = tasks[i];
         }
     }
-    
     if(today_tasks.length > 0) {
         today_tasks = sortTasks(today_tasks);
     }
@@ -61,8 +59,8 @@ function sortTasks(tasks) {
         while(swapped) {
             swapped = false;
             for(var i = 0; i < tasks.length-1; i++) {
-                var this_time = tasks[i].time.replace(":", "");
-                var next_time = tasks[i+1].time.replace(":", "");
+                var this_time = tasks[i].date.getTime();
+                var next_time = tasks[i+1].date.getTime();
                 if(this_time > next_time) {
                     var temp = tasks[i];
                     tasks[i] = tasks[i+1];
@@ -120,7 +118,7 @@ function fillSelectors() {
     
     html = '<option value="">Month</option>'
     for(var i = 1; i < 13; i++) {
-        html += '<option value="' + (i) + '" ' + (i == (parseInt(today.getMonth()) + 1) ? 'selected' : '') + '>' + addZero(i) + '</option>';
+        html += '<option value="' + (i -1) + '" ' + (i == (parseInt(today.getMonth()) + 1) ? 'selected' : '') + '>' + addZero(i) + '</option>';
     }
     $("#add_task_month").append(html);
     
@@ -150,32 +148,28 @@ function fillSelectors() {
 }
 
 function showTasks() {
-    var today = new Date();
-    
-    var now_hours = addZero(today.getHours());
-    var now_minutes = addZero(today.getMinutes());
-    var now_time = now_hours + "" + now_minutes;
+    var now = new Date();
     
     //storage.getItem("tasks", function(items) {
-        items = jQuery.parseJSON('{ "tasks" : ' + storage.getItem("tasks") + ' }');
-        if(items.tasks) {
-            tasks = items.tasks;
-            var today_tasks = getTodayTasks(tasks);
-            //var today_tasks = tasks;
-            if(today_tasks.length > 0) {
-                $("ul").empty();
-                for(var i in today_tasks) {
-                    var this_time = today_tasks[i].time.replace(":", "");
-                    var today_tasks_time_arr = today_tasks[i].time.split(":");
-                    var add = this_time > now_time ? "" : " class='done'";
-                    var add_html = '<li' + add + '>';
-                    add_html += '<strong>' + addZero(today_tasks_time_arr[0]) + ":" + addZero(today_tasks_time_arr[1]) + '</strong> ' + today_tasks[i].task;
-                    add_html += '</li>';
-                    $("ul").append(add_html);
-                }
+    items = jQuery.parseJSON('{ "tasks" : ' + storage.getItem("tasks") + ' }');
+    if(items.tasks) {
+        tasks = items.tasks;
+        for(i in tasks) {
+            tasks[i].date = new Date(tasks[i].date);
+        }
+        var today_tasks = getTodayTasks(tasks);
+        if(today_tasks.length > 0) {
+            $("ul").empty();
+            for(var i in today_tasks) {
+                var add = today_tasks[i].date.getTime() > now.getTime() ? "" : " class='done'";
+                var add_html = '<li' + add + '>';
+                add_html += '<strong>' + addZero(today_tasks[i].date.getHours()) + ":" + addZero(today_tasks[i].date.getMinutes()) + '</strong> ' + today_tasks[i].task;
+                add_html += '</li>';
+                $("ul").append(add_html);
             }
         }
-    //});
+    }
+//});
 }
 
 function addZero(num) {
