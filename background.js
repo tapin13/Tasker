@@ -12,7 +12,7 @@ setInterval(function() {
             }
         }
     }
-}, 20 * 1000);
+}, 60 * 1000);
 
 function getCookie(c_name){
     var i,x,y,ARRcookies=document.cookie.split(";");

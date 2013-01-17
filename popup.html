@@ -5,6 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script type="text/javascript" src="popup.js"></script>
+        <link rel="stylesheet" href="popup.css" type="text/css"/>
     </head>
     <body>
         <div id="container">
@@ -16,11 +17,17 @@
                     <td>Task</td>
                 </tr>
                 <tr>
-                    <td>
-                        <input type="text" id="new_date" value="" class="input_date" />
+                    <td nowrap>
+                        <select id="add_task_day"></select>
+                        /
+                        <select id="add_task_month"></select>
+                        /
+                        <select id="add_task_year"></select>
                     </td>
-                    <td>
-                        <input type="text" id="new_time" value="" class="input_date" />
+                    <td nowrap>
+                        <select id="add_task_hour"></select>
+                        :
+                        <select id="add_task_minute"></select>
                     </td>
                     <td>
                         <input type="text" id="new_task" value="" class="input_task" />
@@ -33,7 +40,7 @@
             <ul></ul>
             <div>
                 <input type="checkbox" id="show_notifications" checked="" />
-                <input type="text" id="when_to_notify" class="input_date" value="" />
+                <select id="when_to_notify"></select>
                 <label for="show_notifications">Show notifications</label>
             </div>
         </div>
