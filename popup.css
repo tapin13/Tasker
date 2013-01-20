@@ -1,3 +1,8 @@
 .done {
     text-decoration: line-through;
 }
+
+.remove_task {
+    margin-left: 10px;
+    cursor: pointer;
+}

@@ -150,26 +150,44 @@ function fillSelectors() {
 function showTasks() {
     var now = new Date();
     
+    $("ul").empty();
     //storage.getItem("tasks", function(items) {
     items = jQuery.parseJSON('{ "tasks" : ' + storage.getItem("tasks") + ' }');
     if(items.tasks) {
         tasks = items.tasks;
         for(i in tasks) {
+            tasks[i].id = i;
             tasks[i].date = new Date(tasks[i].date);
         }
         var today_tasks = getTodayTasks(tasks);
         if(today_tasks.length > 0) {
-            $("ul").empty();
             for(var i in today_tasks) {
                 var add = today_tasks[i].date.getTime() > now.getTime() ? "" : " class='done'";
                 var add_html = '<li' + add + '>';
-                add_html += '<strong>' + addZero(today_tasks[i].date.getHours()) + ":" + addZero(today_tasks[i].date.getMinutes()) + '</strong> ' + today_tasks[i].task;
+                add_html += '<strong>' + addZero(today_tasks[i].date.getHours()) + ":" + addZero(today_tasks[i].date.getMinutes()) + '</strong> ';
+                add_html += today_tasks[i].task;
+                add_html += '<img src="delete.gif" class="remove_task" taskId="' + today_tasks[i].id + '" title="Remove Task" />';
                 add_html += '</li>';
                 $("ul").append(add_html);
             }
         }
+        $(".remove_task").unbind().bind('click', function() { removeTask($(this)) });
     }
 //});
+}
+
+function removeTask(obj) {
+    var taskId = obj.attr('taskId');
+    for(var i in tasks) {
+        if(tasks[i].id == taskId) {
+            tasks.splice(i, 1);
+            break;
+        }
+    }
+    
+    storage.setItem("tasks", JSON.stringify(tasks));
+
+    showTasks();
 }
 
 function addZero(num) {
